@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Instagram, Linkedin, Twitter, Mail, Phone } from "lucide-react";
+import freelaavLogo from '@/assets/freelaav-logo.png';
 
 const Footer = () => {
   return (
@@ -10,14 +11,14 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-2 mb-6">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                <span className="text-white font-bold text-lg">A</span>
+              <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center p-1.5">
+                <img src={freelaavLogo} alt="FreelaAV" className="w-full h-full object-contain" />
               </div>
-              <span className="font-heading font-bold text-xl">AudioVídeo Pro</span>
+              <span className="font-heading font-bold text-xl text-primary">FreelaAV</span>
             </div>
             <p className="text-muted-foreground mb-4">
               A plataforma que conecta os melhores profissionais de áudio e vídeo
-              com clientes que buscam excelência.
+              com clientes que buscam excelência no audiovisual.
             </p>
             <div className="flex space-x-3">
               <Button variant="outline" size="sm">
@@ -57,7 +58,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="w-4 h-4" />
-                <span>contato@audiovideopro.com</span>
+                <span>contato@freelaav.com</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Phone className="w-4 h-4" />
@@ -72,7 +73,7 @@ const Footer = () => {
         
         <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
-            © 2024 AudioVídeo Pro. Todos os direitos reservados.
+            © 2024 FreelaAV. Todos os direitos reservados.
           </p>
           <div className="flex space-x-6 text-sm text-muted-foreground">
             <a href="#" className="hover:text-primary transition-colors">Termos de Uso</a>

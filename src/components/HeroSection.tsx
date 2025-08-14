@@ -11,7 +11,7 @@ const HeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left fade-in">
             <Badge className="mb-4 bg-white/20 text-primary border-0">
-              🎬 A Maior Plataforma de Freelancers Audiovisuais
+              🚀 A Maior Plataforma de Freelancers Audiovisuais
             </Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Conecte-se com os{" "}

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import freelaavLogo from '@/assets/freelaav-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -183,13 +184,13 @@ const Auth = () => {
           Voltar ao início
         </Button>
 
-        <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
+        <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm neon-glow">
           <CardHeader className="text-center">
-            <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-xl">A</span>
+            <div className="w-16 h-16 rounded-lg bg-gradient-primary flex items-center justify-center mx-auto mb-4 p-2">
+              <img src={freelaavLogo} alt="FreelaAV" className="w-full h-full object-contain" />
             </div>
-            <CardTitle className="text-2xl font-heading">AudioVídeo Pro</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-heading text-primary">FreelaAV</CardTitle>
+            <CardDescription className="text-muted-foreground">
               Conecte-se com os melhores profissionais do audiovisual
             </CardDescription>
           </CardHeader>

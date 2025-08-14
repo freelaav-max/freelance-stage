@@ -3,43 +3,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Professional Freelance Marketplace Design System */
+/* FreelaAV - Dark Theme Professional Marketplace Design System */
 
 @layer base {
   :root {
-    /* Brand Colors - Sophisticated purple/blue gradient theme */
-    --primary: 259 94% 51%; /* Deep purple */
+    /* FreelaAV Dark Brand Colors - Neon Purple/Cyan theme */
+    --primary: 285 85% 60%; /* Electric purple */
     --primary-foreground: 0 0% 98%;
-    --secondary: 214 84% 56%; /* Professional blue */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 190 95% 55%; /* Bright cyan */
+    --secondary-foreground: 0 0% 4%;
     
-    /* Neutral Colors */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    /* Dark Theme Colors */
+    --background: 240 10% 4%; /* Deep dark background */
+    --foreground: 0 0% 95%; /* Light text */
+    --muted: 240 5% 12%; /* Dark muted */
+    --muted-foreground: 240 5% 65%; /* Muted text */
+    --accent: 240 6% 16%; /* Dark accent */
+    --accent-foreground: 0 0% 95%;
     
-    /* UI Colors */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 259 94% 51%;
+    /* UI Colors - Dark theme */
+    --card: 240 8% 6%; /* Dark cards */
+    --card-foreground: 0 0% 95%;
+    --border: 240 6% 20%; /* Subtle borders */
+    --input: 240 6% 16%; /* Dark inputs */
+    --ring: 285 85% 60%; /* Focus ring */
     
-    /* Success/Warning/Error */
-    --success: 142 76% 36%;
+    /* Dark popover */
+    --popover: 240 8% 6%;
+    --popover-foreground: 0 0% 95%;
+    
+    /* Success/Warning/Error - Dark optimized */
+    --success: 142 76% 45%;
     --success-foreground: 0 0% 98%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 98%;
-    --destructive: 0 84% 60%;
+    --warning: 38 92% 60%;
+    --warning-foreground: 0 0% 4%;
+    --destructive: 0 84% 65%;
     --destructive-foreground: 0 0% 98%;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(259 94% 51%) 0%, hsl(214 84% 56%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(214 84% 56%) 0%, hsl(259 94% 51%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(259 94% 51% / 0.1) 0%, hsl(214 84% 56% / 0.1) 100%);
+    /* FreelaAV Neon Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(285 85% 60%) 0%, hsl(190 95% 55%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(190 95% 55%) 0%, hsl(285 85% 60%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(285 85% 60% / 0.15) 0%, hsl(190 95% 55% / 0.15) 100%);
+    --gradient-neon: linear-gradient(45deg, hsl(285 85% 60% / 0.8) 0%, hsl(190 95% 55% / 0.8) 50%, hsl(285 85% 60% / 0.8) 100%);
     
     /* Spacing */
     --radius: 0.75rem;
@@ -49,17 +54,20 @@
     --font-body: 'Inter', system-ui, sans-serif;
   }
 
-  .dark {
-    --background: 222 84% 5%;
-    --foreground: 210 40% 98%;
-    --card: 222 84% 5%;
-    --card-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+  .light {
+    /* Light mode fallback (rarely used) */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
   }
 }
 
@@ -71,6 +79,8 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Force dark theme */
+    color-scheme: dark;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -149,9 +159,14 @@
     }
   }
 
-  /* Search and filters */
+  /* Search and filters - Dark theme */
   .search-container {
-    @apply bg-white/80 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-lg;
+    @apply bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-lg;
+  }
+  
+  /* Neon accents for FreelaAV */
+  .neon-glow {
+    box-shadow: 0 0 20px hsl(285 85% 60% / 0.3), 0 0 40px hsl(190 95% 55% / 0.2);
   }
   
   /* Dashboard styles */
