@@ -17,6 +17,8 @@ export type Database = {
       freelancer_profiles: {
         Row: {
           bio: string | null
+          city: string | null
+          country: string | null
           created_at: string
           equipment: string | null
           experience_years: number | null
@@ -25,12 +27,15 @@ export type Database = {
           is_pro_member: boolean | null
           portfolio_links: string[] | null
           rating: number | null
+          state: string | null
           total_jobs: number | null
           total_reviews: number | null
           updated_at: string
         }
         Insert: {
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           equipment?: string | null
           experience_years?: number | null
@@ -39,12 +44,15 @@ export type Database = {
           is_pro_member?: boolean | null
           portfolio_links?: string[] | null
           rating?: number | null
+          state?: string | null
           total_jobs?: number | null
           total_reviews?: number | null
           updated_at?: string
         }
         Update: {
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           equipment?: string | null
           experience_years?: number | null
@@ -53,6 +61,7 @@ export type Database = {
           is_pro_member?: boolean | null
           portfolio_links?: string[] | null
           rating?: number | null
+          state?: string | null
           total_jobs?: number | null
           total_reviews?: number | null
           updated_at?: string
@@ -86,6 +95,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "freelancer_specialties_freelancer_id_fkey"
+            columns: ["freelancer_id"]
+            isOneToOne: false
+            referencedRelation: "freelancer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolio_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          freelancer_id: string
+          id: string
+          media_type: string
+          media_url: string
+          thumbnail_url: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          freelancer_id: string
+          id?: string
+          media_type: string
+          media_url: string
+          thumbnail_url?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          freelancer_id?: string
+          id?: string
+          media_type?: string
+          media_url?: string
+          thumbnail_url?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_items_freelancer_id_fkey"
             columns: ["freelancer_id"]
             isOneToOne: false
             referencedRelation: "freelancer_profiles"
