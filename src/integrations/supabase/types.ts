@@ -14,7 +14,124 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      freelancer_profiles: {
+        Row: {
+          bio: string | null
+          created_at: string
+          equipment: string | null
+          experience_years: number | null
+          hourly_rate: number | null
+          id: string
+          is_pro_member: boolean | null
+          portfolio_links: string[] | null
+          rating: number | null
+          total_jobs: number | null
+          total_reviews: number | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          equipment?: string | null
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id: string
+          is_pro_member?: boolean | null
+          portfolio_links?: string[] | null
+          rating?: number | null
+          total_jobs?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          equipment?: string | null
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string
+          is_pro_member?: boolean | null
+          portfolio_links?: string[] | null
+          rating?: number | null
+          total_jobs?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "freelancer_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      freelancer_specialties: {
+        Row: {
+          freelancer_id: string
+          id: string
+          specialty: Database["public"]["Enums"]["specialty"]
+        }
+        Insert: {
+          freelancer_id: string
+          id?: string
+          specialty: Database["public"]["Enums"]["specialty"]
+        }
+        Update: {
+          freelancer_id?: string
+          id?: string
+          specialty?: Database["public"]["Enums"]["specialty"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "freelancer_specialties_freelancer_id_fkey"
+            columns: ["freelancer_id"]
+            isOneToOne: false
+            referencedRelation: "freelancer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+          state: string | null
+          updated_at: string
+          user_type: Database["public"]["Enums"]["user_type"]
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          user_type: Database["public"]["Enums"]["user_type"]
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          state?: string | null
+          updated_at?: string
+          user_type?: Database["public"]["Enums"]["user_type"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +140,18 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      specialty:
+        | "audio_engineer"
+        | "sound_technician"
+        | "camera_operator"
+        | "video_editor"
+        | "lighting_technician"
+        | "dj"
+        | "vj"
+        | "live_streaming"
+        | "photographer"
+        | "videographer"
+      user_type: "freelancer" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +278,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      specialty: [
+        "audio_engineer",
+        "sound_technician",
+        "camera_operator",
+        "video_editor",
+        "lighting_technician",
+        "dj",
+        "vj",
+        "live_streaming",
+        "photographer",
+        "videographer",
+      ],
+      user_type: ["freelancer", "client"],
+    },
   },
 } as const
