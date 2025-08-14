@@ -1,23 +1,38 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail } from 'lucide-react';
+import { 
+  loginSchema, 
+  signupSchema, 
+  resetPasswordSchema, 
+  updatePasswordSchema,
+  type LoginFormData, 
+  type SignupFormData, 
+  type ResetPasswordFormData,
+  type UpdatePasswordFormData 
+} from '@/lib/auth-schemas';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { signUp, signIn, user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const { signUp, signIn, resetPassword, user } = useAuth();
   const { toast } = useToast();
   
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('login');
+  const isPasswordReset = searchParams.get('reset') === 'true';
   
   // Redirect if already authenticated
   useEffect(() => {
@@ -26,25 +41,51 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: ''
+  // Handle password reset redirect
+  useEffect(() => {
+    if (isPasswordReset) {
+      setActiveTab('reset-password');
+    }
+  }, [isPasswordReset]);
+
+  // Form configurations
+  const loginForm = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: ''
+    }
   });
 
-  const [signupForm, setSignupForm] = useState({
-    full_name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    user_type: 'client' as 'freelancer' | 'client'
+  const signupForm = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      full_name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      user_type: 'client'
+    }
   });
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const resetForm = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: ''
+    }
+  });
 
+  const updatePasswordForm = useForm<UpdatePasswordFormData>({
+    resolver: zodResolver(updatePasswordSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: ''
+    }
+  });
+
+  const handleLogin = async (data: LoginFormData) => {
     try {
-      const { error } = await signIn(loginForm.email, loginForm.password);
+      const { error } = await signIn(data.email, data.password);
       
       if (error) {
         toast({
@@ -67,42 +108,17 @@ const Auth = () => {
         description: "Tente novamente mais tarde",
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    if (signupForm.password !== signupForm.confirmPassword) {
-      toast({
-        title: "Erro no cadastro",
-        description: "As senhas não coincidem",
-        variant: "destructive"
-      });
-      setLoading(false);
-      return;
-    }
-
-    if (signupForm.password.length < 6) {
-      toast({
-        title: "Erro no cadastro",
-        description: "A senha deve ter pelo menos 6 caracteres",
-        variant: "destructive"
-      });
-      setLoading(false);
-      return;
-    }
-
+  const handleSignup = async (data: SignupFormData) => {
     try {
       const { error } = await signUp(
-        signupForm.email, 
-        signupForm.password,
+        data.email, 
+        data.password,
         {
-          full_name: signupForm.full_name,
-          user_type: signupForm.user_type
+          full_name: data.full_name,
+          user_type: data.user_type
         }
       );
       
@@ -126,8 +142,32 @@ const Auth = () => {
         description: "Tente novamente mais tarde",
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (data: ResetPasswordFormData) => {
+    try {
+      const { error } = await resetPassword(data.email);
+      
+      if (error) {
+        toast({
+          title: "Erro na recuperação",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Email enviado!",
+          description: "Verifique sua caixa de entrada para redefinir sua senha"
+        });
+        setActiveTab('login');
+      }
+    } catch (error) {
+      toast({
+        title: "Erro inesperado",
+        description: "Tente novamente mais tarde",
+        variant: "destructive"
+      });
     }
   };
 
@@ -155,133 +195,232 @@ const Auth = () => {
           </CardHeader>
           
           <CardContent>
-            <Tabs defaultValue="login" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Entrar</TabsTrigger>
                 <TabsTrigger value="signup">Cadastrar</TabsTrigger>
               </TabsList>
               
               <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
-                    <Input
-                      id="login-email"
-                      type="email"
-                      placeholder="seu@email.com"
-                      value={loginForm.email}
-                      onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
-                      required
+                <Form {...loginForm}>
+                  <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
+                    <FormField
+                      control={loginForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="seu@email.com" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Senha</Label>
-                    <div className="relative">
-                      <Input
-                        id="login-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
-                        value={loginForm.password}
-                        onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                        required
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <Button type="submit" className="w-full btn-gradient" disabled={loading}>
-                    {loading ? "Entrando..." : "Entrar"}
-                  </Button>
-                </form>
+                    
+                    <FormField
+                      control={loginForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Senha</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="••••••••"
+                                type={showPassword ? "text" : "password"}
+                                {...field}
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full btn-gradient" 
+                      disabled={loginForm.formState.isSubmitting}
+                    >
+                      {loginForm.formState.isSubmitting ? "Entrando..." : "Entrar"}
+                    </Button>
+                    
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="w-full"
+                      onClick={() => setActiveTab('reset-password')}
+                    >
+                      Esqueceu sua senha?
+                    </Button>
+                  </form>
+                </Form>
               </TabsContent>
               
               <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Nome completo</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="Seu nome completo"
-                      value={signupForm.full_name}
-                      onChange={(e) => setSignupForm(prev => ({ ...prev, full_name: e.target.value }))}
-                      required
+                <Form {...signupForm}>
+                  <form onSubmit={signupForm.handleSubmit(handleSignup)} className="space-y-4">
+                    <FormField
+                      control={signupForm.control}
+                      name="full_name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nome completo</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Seu nome completo" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="seu@email.com"
-                      value={signupForm.email}
-                      onChange={(e) => setSignupForm(prev => ({ ...prev, email: e.target.value }))}
-                      required
+                    
+                    <FormField
+                      control={signupForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="seu@email.com" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="user-type">Tipo de usuário</Label>
-                    <Select value={signupForm.user_type} onValueChange={(value: 'freelancer' | 'client') => setSignupForm(prev => ({ ...prev, user_type: value }))}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o tipo de usuário" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="client">Cliente - Contrato profissionais</SelectItem>
-                        <SelectItem value="freelancer">Freelancer - Ofereço serviços</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Senha</Label>
-                    <div className="relative">
-                      <Input
-                        id="signup-password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
-                        value={signupForm.password}
-                        onChange={(e) => setSignupForm(prev => ({ ...prev, password: e.target.value }))}
-                        required
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
+                    
+                    <FormField
+                      control={signupForm.control}
+                      name="user_type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tipo de usuário</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o tipo de usuário" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="client">Cliente - Contrato profissionais</SelectItem>
+                              <SelectItem value="freelancer">Freelancer - Ofereço serviços</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={signupForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Senha</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                placeholder="••••••••"
+                                type={showPassword ? "text" : "password"}
+                                {...field}
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={signupForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirmar senha</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="••••••••"
+                              type="password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full btn-gradient" 
+                      disabled={signupForm.formState.isSubmitting}
+                    >
+                      {signupForm.formState.isSubmitting ? "Cadastrando..." : "Criar conta"}
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+              
+              <TabsContent value="reset-password">
+                <Form {...resetForm}>
+                  <form onSubmit={resetForm.handleSubmit(handleResetPassword)} className="space-y-4">
+                    <div className="text-center mb-4">
+                      <Mail className="w-12 h-12 mx-auto text-primary mb-2" />
+                      <h3 className="text-lg font-semibold">Esqueceu sua senha?</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Digite seu email e enviaremos um link para redefinir sua senha
+                      </p>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirmar senha</Label>
-                    <Input
-                      id="confirm-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={signupForm.confirmPassword}
-                      onChange={(e) => setSignupForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      required
+                    
+                    <FormField
+                      control={resetForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="seu@email.com" type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  
-                  <Button type="submit" className="w-full btn-gradient" disabled={loading}>
-                    {loading ? "Cadastrando..." : "Criar conta"}
-                  </Button>
-                </form>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full btn-gradient" 
+                      disabled={resetForm.formState.isSubmitting}
+                    >
+                      {resetForm.formState.isSubmitting ? "Enviando..." : "Enviar link de recuperação"}
+                    </Button>
+                    
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="w-full"
+                      onClick={() => setActiveTab('login')}
+                    >
+                      Voltar ao login
+                    </Button>
+                  </form>
+                </Form>
               </TabsContent>
             </Tabs>
           </CardContent>
