@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import FreelancerProfile from "./pages/FreelancerProfile";
 import FreelancerPublicProfile from "./pages/FreelancerPublicProfile";
+import SearchResults from "./pages/SearchResults";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -19,6 +20,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<FreelancerProfile />} />
             <Route path="/freelancer/:id" element={<FreelancerPublicProfile />} />
+            <Route path="/search" element={<SearchResults />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,10 +1,61 @@
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, MapPin, DollarSign, Search } from "lucide-react";
+import { SPECIALTIES } from "@/lib/freelancer";
+
+const BRAZILIAN_CITIES = [
+  'São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Salvador', 'Brasília', 
+  'Fortaleza', 'Curitiba', 'Recife', 'Porto Alegre', 'Manaus'
+];
+
+const POPULAR_SEARCHES = [
+  { label: 'Casamentos', specialty: 'cinegrafista' },
+  { label: 'Eventos Corporativos', specialty: 'tecnico-som' },
+  { label: 'Shows', specialty: 'iluminador' },
+  { label: 'Streaming', specialty: 'operador-camera' }
+];
 
 const SearchSection = () => {
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [specialty, setSpecialty] = useState("");
+  const [city, setCity] = useState("");
+  const [availableDate, setAvailableDate] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    
+    if (searchTerm) params.set('q', searchTerm);
+    if (specialty) params.set('specialty', specialty);
+    if (city) params.set('city', city);
+    if (availableDate) params.set('date', availableDate);
+    if (priceRange) {
+      const [min, max] = priceRange.split('-');
+      if (min) params.set('minPrice', min);
+      if (max && max !== '+') params.set('maxPrice', max);
+    }
+    
+    navigate(`/search?${params.toString()}`);
+  };
+
+  const handlePopularSearch = (popularSearch: typeof POPULAR_SEARCHES[0]) => {
+    const params = new URLSearchParams();
+    params.set('specialty', popularSearch.specialty);
+    navigate(`/search?${params.toString()}`);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <section className="py-16 -mt-10 relative z-20">
       <div className="container">
@@ -13,23 +64,35 @@ const SearchSection = () => {
             Encontre o Profissional Ideal para seu Projeto
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+            {/* Busca Geral */}
+            <div className="space-y-2 md:col-span-2 lg:col-span-1">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                Buscar
+              </label>
+              <Input
+                placeholder="Ex: cinegrafista experiente"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="w-full"
+              />
+            </div>
+            
             <div className="space-y-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 <Search className="w-4 h-4" />
                 Especialidade
               </label>
-              <Select>
+              <Select value={specialty} onValueChange={setSpecialty}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecionar área" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cinegrafista">Cinegrafista</SelectItem>
-                  <SelectItem value="tecnico-som">Técnico de Som</SelectItem>
-                  <SelectItem value="iluminador">Iluminador</SelectItem>
-                  <SelectItem value="vj">VJ / Motion Designer</SelectItem>
-                  <SelectItem value="operador-camera">Operador de Câmera</SelectItem>
-                  <SelectItem value="editor">Editor de Vídeo</SelectItem>
+                  {SPECIALTIES.map((spec) => (
+                    <SelectItem key={spec.value} value={spec.value}>{spec.label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -39,17 +102,14 @@ const SearchSection = () => {
                 <MapPin className="w-4 h-4" />
                 Localização
               </label>
-              <Select>
+              <Select value={city} onValueChange={setCity}>
                 <SelectTrigger>
                   <SelectValue placeholder="Cidade" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sao-paulo">São Paulo</SelectItem>
-                  <SelectItem value="rio-janeiro">Rio de Janeiro</SelectItem>
-                  <SelectItem value="belo-horizonte">Belo Horizonte</SelectItem>
-                  <SelectItem value="brasilia">Brasília</SelectItem>
-                  <SelectItem value="salvador">Salvador</SelectItem>
-                  <SelectItem value="recife">Recife</SelectItem>
+                  {BRAZILIAN_CITIES.map((cityName) => (
+                    <SelectItem key={cityName} value={cityName}>{cityName}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -59,9 +119,12 @@ const SearchSection = () => {
                 <Calendar className="w-4 h-4" />
                 Data
               </label>
-              <input
+              <Input
                 type="date"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                value={availableDate}
+                onChange={(e) => setAvailableDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                className="w-full"
               />
             </div>
             
@@ -70,7 +133,7 @@ const SearchSection = () => {
                 <DollarSign className="w-4 h-4" />
                 Orçamento
               </label>
-              <Select>
+              <Select value={priceRange} onValueChange={setPriceRange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Faixa de preço" />
                 </SelectTrigger>
@@ -86,20 +149,35 @@ const SearchSection = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <Button className="btn-gradient w-full sm:w-auto px-8">
+            <Button 
+              onClick={handleSearch}
+              className="btn-gradient w-full sm:w-auto px-8"
+              size="lg"
+            >
               <Search className="mr-2 h-4 w-4" />
               Buscar Profissionais
             </Button>
-            <Button variant="outline" className="w-full sm:w-auto">
-              Filtros Avançados
+            <Button 
+              variant="outline" 
+              className="w-full sm:w-auto"
+              onClick={() => navigate('/search')}
+            >
+              Busca Avançada
             </Button>
           </div>
           
           <div className="flex flex-wrap gap-2 mt-4">
-            <Badge variant="secondary">Popular: Casamentos</Badge>
-            <Badge variant="secondary">Eventos Corporativos</Badge>
-            <Badge variant="secondary">Shows</Badge>
-            <Badge variant="secondary">Streaming</Badge>
+            <span className="text-sm text-muted-foreground mr-2">Popular:</span>
+            {POPULAR_SEARCHES.map((search) => (
+              <Badge 
+                key={search.label}
+                variant="secondary" 
+                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                onClick={() => handlePopularSearch(search)}
+              >
+                {search.label}
+              </Badge>
+            ))}
           </div>
         </div>
       </div>
