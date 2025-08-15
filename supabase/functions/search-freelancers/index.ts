@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -45,12 +46,13 @@ serve(async (req) => {
       limit = 12
     } = filters;
 
-    // Base query with joins
+    // Use secure query that only exposes public freelancer information
+    // The RLS policies will automatically filter to only show public data
     let query = supabaseClient
       .from('freelancer_profiles')
       .select(`
         *,
-        profiles!inner(id, full_name, email, avatar_url, city, state),
+        profiles!inner(id, full_name, city, state, avatar_url),
         freelancer_specialties!inner(specialty),
         portfolio_items(id, title, media_url, thumbnail_url, media_type)
       `);
@@ -80,7 +82,7 @@ serve(async (req) => {
       query = query.gte('rating', minRating);
     }
 
-    // Text search in bio, full_name
+    // Text search in bio, full_name (safe since RLS will filter sensitive data)
     if (searchTerm) {
       query = query.or(`bio.ilike.%${searchTerm}%, profiles.full_name.ilike.%${searchTerm}%`);
     }
@@ -133,7 +135,14 @@ serve(async (req) => {
         ...freelancer,
         specialties: specialtiesList,
         portfolio: portfolioItems,
-        user: freelancer.profiles
+        user: {
+          // Only expose public information - email is now protected by RLS
+          id: freelancer.profiles?.id,
+          full_name: freelancer.profiles?.full_name,
+          city: freelancer.profiles?.city,
+          state: freelancer.profiles?.state,
+          avatar_url: freelancer.profiles?.avatar_url
+        }
       };
     }) || [];
 

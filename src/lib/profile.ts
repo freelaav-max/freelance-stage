@@ -29,6 +29,7 @@ export interface FreelancerProfile {
   updated_at: string;
 }
 
+// Get user's own profile (full access due to RLS policy)
 export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
   const { data, error } = await supabase
     .from('profiles')
@@ -42,6 +43,38 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
   }
 
   return data;
+};
+
+// Get public freelancer profile data (limited by RLS policies)
+export const getPublicFreelancerProfile = async (userId: string) => {
+  try {
+    // Try to use the secure function first
+    const { data, error } = await supabase
+      .rpc('get_public_freelancer_info', { freelancer_id: userId });
+
+    if (error) {
+      console.error('Error using secure function:', error);
+      // Fallback to direct query (will be filtered by RLS)
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('profiles')
+        .select('id, full_name, city, state, avatar_url')
+        .eq('id', userId)
+        .eq('user_type', 'freelancer')
+        .single();
+
+      if (fallbackError) {
+        console.error('Error fetching public profile:', fallbackError);
+        return null;
+      }
+
+      return fallbackData;
+    }
+
+    return data && data.length > 0 ? data[0] : null;
+  } catch (err) {
+    console.error('Error fetching public freelancer profile:', err);
+    return null;
+  }
 };
 
 export const getFreelancerProfile = async (userId: string): Promise<FreelancerProfile | null> => {

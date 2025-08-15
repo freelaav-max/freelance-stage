@@ -8,7 +8,7 @@ export type PortfolioItem = Database['public']['Tables']['portfolio_items']['Row
 export type FreelancerProfileWithUser = FreelancerProfile & {
   profiles: {
     full_name: string;
-    email: string;
+    email?: string; // Optional since it may not be available in public context
     avatar_url: string | null;
     city: string | null;
     state: string | null;
@@ -35,18 +35,36 @@ export const getFreelancerProfile = async (userId: string): Promise<FreelancerPr
   if (profileError) throw profileError;
   if (!profile) return null;
 
+  // Use the secure function to get public profile data
+  // This will only return non-sensitive information for public access
   const { data: userProfile, error: userError } = await supabase
-    .from('profiles')
-    .select('full_name, email, avatar_url, city, state')
-    .eq('id', userId)
-    .single();
+    .rpc('get_public_freelancer_info', { freelancer_id: userId });
 
-  if (userError) throw userError;
+  if (userError) {
+    // Fallback to direct query which will be filtered by RLS policies
+    const { data: fallbackProfile, error: fallbackError } = await supabase
+      .from('profiles')
+      .select('full_name, city, state, avatar_url')
+      .eq('id', userId)
+      .single();
 
-  return {
-    ...profile,
-    profiles: userProfile
-  } as FreelancerProfileWithUser;
+    if (fallbackError) throw fallbackError;
+    
+    return {
+      ...profile,
+      profiles: fallbackProfile
+    } as FreelancerProfileWithUser;
+  }
+
+  // If we got data from the secure function, use it
+  if (userProfile && userProfile.length > 0) {
+    return {
+      ...profile,
+      profiles: userProfile[0]
+    } as FreelancerProfileWithUser;
+  }
+
+  return null;
 };
 
 export const getFreelancerSpecialties = async (freelancerId: string) => {
