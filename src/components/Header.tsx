@@ -7,7 +7,6 @@ import { Search, Menu, User, Bell, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
-import freelaavLogo from '@/assets/freelaav-logo.png';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -32,17 +31,15 @@ const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container">
         {/* Mobile Layout */}
-        <div className="flex h-16 items-center justify-between md:hidden">
+        <div className="flex h-14 items-center justify-between md:hidden">
           {/* Logo - Mobile */}
           <div 
             className="flex items-center cursor-pointer flex-shrink-0" 
             onClick={() => navigate('/')}
           >
-            <img 
-              src={freelaavLogo} 
-              alt="FreelaAV" 
-              className="h-8 w-auto object-contain" 
-            />
+            <div className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              FreelaAV
+            </div>
           </div>
 
           {/* Mobile Actions */}
@@ -95,18 +92,16 @@ const Header = () => {
         </div>
 
         {/* Desktop Layout */}
-        <div className="hidden md:flex h-20 items-center">
+        <div className="hidden md:flex h-16 items-center">
           {/* Logo - Desktop */}
           <div className="mr-8 flex items-center flex-shrink-0">
             <div 
               className="flex items-center cursor-pointer" 
               onClick={() => navigate('/')}
             >
-              <img 
-                src={freelaavLogo} 
-                alt="FreelaAV" 
-                className="h-12 w-auto object-contain hover:opacity-90 transition-opacity" 
-              />
+              <div className="text-2xl lg:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent hover:opacity-90 transition-opacity">
+                FreelaAV
+              </div>
             </div>
           </div>
           
@@ -115,7 +110,7 @@ const Header = () => {
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
-                className="flex h-12 w-full rounded-xl border border-input bg-background/50 backdrop-blur-sm px-12 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary transition-all"
+                className="flex h-11 w-full rounded-xl border border-input bg-background/50 backdrop-blur-sm px-12 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary transition-all"
                 placeholder="Buscar freelancers, especialidades, localização..."
                 type="search"
               />
@@ -135,8 +130,8 @@ const Header = () => {
                 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full ml-4">
-                      <Avatar className="h-10 w-10">
+                    <Button variant="ghost" className="relative h-9 w-9 rounded-full ml-4">
+                      <Avatar className="h-9 w-9">
                         <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name || user.email} />
                         <AvatarFallback className="bg-gradient-primary text-white">
                           {user.user_metadata?.full_name ? getInitials(user.user_metadata.full_name) : 'U'}
@@ -190,7 +185,7 @@ const Header = () => {
         </div>
 
         {/* Mobile Search Bar - Below header */}
-        <div className="md:hidden pb-4">
+        <div className="md:hidden pb-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
