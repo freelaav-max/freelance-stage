@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Search, Menu, User, Bell, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import freelaavLogo from '@/assets/freelaav-logo.png';
+import freelaavLogo from '@/assets/freelaav-logo-new.png';
 
 const Header = () => {
   const { user, signOut } = useAuth();
