@@ -27,14 +27,23 @@ const Header = () => {
       .toUpperCase();
   };
 
+  const getSearchPlaceholder = () => {
+    if (typeof window === 'undefined') return "Buscar freelancers...";
+    
+    const width = window.innerWidth;
+    if (width < 640) return "Buscar freelancers...";
+    if (width < 1024) return "Buscar freelancers, especialidades...";
+    return "Buscar freelancers, especialidades, localização...";
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container">
+      <div className="container mx-auto px-4">
         {/* Mobile Layout */}
         <div className="flex h-14 items-center justify-between md:hidden">
           {/* Logo - Mobile */}
           <div 
-            className="flex items-center cursor-pointer flex-shrink-0" 
+            className="flex items-center cursor-pointer flex-shrink-0 min-w-0" 
             onClick={() => navigate('/')}
           >
             <div className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
@@ -43,7 +52,7 @@ const Header = () => {
           </div>
 
           {/* Mobile Actions */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -106,19 +115,19 @@ const Header = () => {
           </div>
           
           {/* Search Bar - Desktop */}
-          <div className="flex flex-1 items-center justify-center max-w-2xl mx-auto">
-            <div className="relative w-full">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <div className="flex flex-1 items-center justify-center max-w-2xl mx-auto min-w-0">
+            <div className="relative w-full min-w-0">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground flex-shrink-0" />
               <input
-                className="flex h-11 w-full rounded-xl border border-input bg-background/50 backdrop-blur-sm px-12 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary transition-all"
-                placeholder="Buscar freelancers, especialidades, localização..."
+                className="flex h-11 w-full rounded-xl border border-input bg-background/50 backdrop-blur-sm pl-12 pr-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground placeholder:truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary transition-all min-w-0"
+                placeholder={getSearchPlaceholder()}
                 type="search"
               />
             </div>
           </div>
           
           {/* Desktop Navigation */}
-          <nav className="flex items-center space-x-4 ml-8">
+          <nav className="flex items-center space-x-4 ml-8 flex-shrink-0">
             {user ? (
               <>
                 <Button variant="ghost" size="sm" className="text-sm font-medium">
@@ -186,10 +195,10 @@ const Header = () => {
 
         {/* Mobile Search Bar - Below header */}
         <div className="md:hidden pb-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <div className="relative min-w-0">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground flex-shrink-0" />
             <input
-              className="flex h-10 w-full rounded-lg border border-input bg-background/50 backdrop-blur-sm px-10 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary transition-all"
+              className="flex h-10 w-full rounded-lg border border-input bg-background/50 backdrop-blur-sm pl-10 pr-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground placeholder:truncate focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary transition-all min-w-0"
               placeholder="Buscar freelancers..."
               type="search"
             />
