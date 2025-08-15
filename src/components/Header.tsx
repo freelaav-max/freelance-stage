@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,15 +27,17 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-20 items-center">
-        <div className="mr-4 flex items-center space-x-2">
-          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="w-10 h-14 rounded-lg bg-gradient-primary flex items-center justify-center p-1.5">
-              <img src={freelaavLogo} alt="FreelaAV" className="w-full h-full object-contain" />
-            </div>
-            <span className="font-heading font-bold text-xl text-primary">FreelaAV</span>
+      <div className="container flex h-16 items-center">
+        {/* INÍCIO DA ALTERAÇÃO */}
+        <div className="mr-4 flex items-center">
+          <div className="flex items-center cursor-pointer" onClick={() => navigate('/')}>
+            {/* Ajuste o valor de 'h-10' para o tamanho que desejar (ex: h-12, h-14).
+              Isso vai controlar a altura da logo e a largura se ajustará automaticamente.
+            */}
+            <img src={freelaavLogo} alt="FreelaAV" className="h-10" />
           </div>
         </div>
+        {/* FIM DA ALTERAÇÃO */}
         
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
