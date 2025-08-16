@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Star, MapPin, Clock, DollarSign, Camera, MessageCircle, Heart } from 'lucide-react';
 import { useFreelancerProfile } from '@/hooks/useFreelancerProfile';
 import { SPECIALTIES } from '@/lib/freelancer';
+import { AvailabilityDisplay } from '@/components/AvailabilityDisplay';
 
 const FreelancerPublicProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -181,6 +182,8 @@ const FreelancerPublicProfile: React.FC = () => {
                 )}
               </CardContent>
             </Card>
+
+            <AvailabilityDisplay freelancerId={id!} />
           </div>
         </div>
       </div>

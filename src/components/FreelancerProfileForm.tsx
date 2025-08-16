@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { updateFreelancerProfile, updateFreelancerSpecialties, uploadAvatar, uploadPortfolioImage, calculateProfileStrength, SPECIALTIES } from '@/lib/freelancer';
 import { useToast } from '@/hooks/use-toast';
 import { useFreelancerProfile } from '@/hooks/useFreelancerProfile';
+import { FreelancerCalendar } from '@/components/FreelancerCalendar';
 
 const freelancerSchema = z.object({
   bio: z.string().optional(),
@@ -321,6 +322,16 @@ export const FreelancerProfileForm: React.FC = () => {
               </Button>
             </form>
           </Form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Agenda e Disponibilidade</CardTitle>
+          <CardDescription>Gerencie sua disponibilidade para receber ofertas de trabalho</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <FreelancerCalendar />
         </CardContent>
       </Card>
     </div>
