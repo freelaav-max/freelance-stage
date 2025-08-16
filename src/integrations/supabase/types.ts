@@ -14,6 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
+      availability: {
+        Row: {
+          created_at: string
+          external_id: string | null
+          freelancer_id: string
+          id: string
+          notes: string | null
+          period: unknown
+          source: Database["public"]["Enums"]["availability_source"]
+          status: Database["public"]["Enums"]["availability_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          external_id?: string | null
+          freelancer_id: string
+          id?: string
+          notes?: string | null
+          period: unknown
+          source?: Database["public"]["Enums"]["availability_source"]
+          status: Database["public"]["Enums"]["availability_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          external_id?: string | null
+          freelancer_id?: string
+          id?: string
+          notes?: string | null
+          period?: unknown
+          source?: Database["public"]["Enums"]["availability_source"]
+          status?: Database["public"]["Enums"]["availability_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      bookings: {
+        Row: {
+          client_id: string | null
+          created_at: string
+          freelancer_id: string
+          id: string
+          notes: string | null
+          period: unknown
+          source: string | null
+          status: Database["public"]["Enums"]["booking_status"]
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string
+          freelancer_id: string
+          id?: string
+          notes?: string | null
+          period: unknown
+          source?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string
+          freelancer_id?: string
+          id?: string
+          notes?: string | null
+          period?: unknown
+          source?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      calendar_connections: {
+        Row: {
+          created_at: string
+          external_calendar_id: string | null
+          freelancer_id: string
+          ical_url: string | null
+          id: string
+          is_active: boolean
+          last_sync_at: string | null
+          provider: Database["public"]["Enums"]["calendar_provider"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          external_calendar_id?: string | null
+          freelancer_id: string
+          ical_url?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          provider: Database["public"]["Enums"]["calendar_provider"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          external_calendar_id?: string | null
+          freelancer_id?: string
+          ical_url?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          provider?: Database["public"]["Enums"]["calendar_provider"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       freelancer_profiles: {
         Row: {
           bio: string | null
@@ -190,6 +301,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_my_availability: {
+        Args: { from_at: string; to_at: string }
+        Returns: {
+          created_at: string
+          external_id: string | null
+          freelancer_id: string
+          id: string
+          notes: string | null
+          period: unknown
+          source: Database["public"]["Enums"]["availability_source"]
+          status: Database["public"]["Enums"]["availability_status"]
+          updated_at: string
+        }[]
+      }
+      get_public_availability: {
+        Args: { freelancer: string; from_at: string; to_at: string }
+        Returns: {
+          period: unknown
+          status: Database["public"]["Enums"]["availability_status"]
+        }[]
+      }
       get_public_freelancer_info: {
         Args: { freelancer_id: string }
         Returns: {
@@ -200,8 +332,27 @@ export type Database = {
           state: string
         }[]
       }
+      set_availability: {
+        Args: {
+          end_at: string
+          notes?: string
+          source?: Database["public"]["Enums"]["availability_source"]
+          start_at: string
+          status: Database["public"]["Enums"]["availability_status"]
+        }
+        Returns: string
+      }
     }
     Enums: {
+      availability_source:
+        | "manual"
+        | "google"
+        | "ical"
+        | "auto_blocked"
+        | "other"
+      availability_status: "available" | "unavailable" | "partial"
+      booking_status: "pending" | "confirmed" | "cancelled"
+      calendar_provider: "google" | "ical" | "outlook" | "other"
       specialty:
         | "audio_engineer"
         | "sound_technician"
@@ -341,6 +492,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      availability_source: [
+        "manual",
+        "google",
+        "ical",
+        "auto_blocked",
+        "other",
+      ],
+      availability_status: ["available", "unavailable", "partial"],
+      booking_status: ["pending", "confirmed", "cancelled"],
+      calendar_provider: ["google", "ical", "outlook", "other"],
       specialty: [
         "audio_engineer",
         "sound_technician",
