@@ -51,7 +51,7 @@ const FreelancerPublicProfile: React.FC = () => {
                     <h1 className="text-2xl font-bold">{profile.profiles?.full_name}</h1>
                     <div className="flex items-center justify-center mt-2 text-muted-foreground">
                       <MapPin className="h-4 w-4 mr-1" />
-                      <span>{profile.city}, {profile.state}</span>
+                      <span>{profile.profiles?.city || profile.city}, {profile.profiles?.state || profile.state}</span>
                     </div>
                   </div>
 
@@ -155,17 +155,23 @@ const FreelancerPublicProfile: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {portfolioItems.map((item) => (
                       <div key={item.id} className="space-y-2">
-                        {item.media_type === 'image' ? (
+                        {item.image_url ? (
                           <img
-                            src={item.media_url}
+                            src={item.image_url}
                             alt={item.title}
                             className="w-full h-48 object-cover rounded-lg"
                           />
+                        ) : item.video_url ? (
+                          <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
+                            <span className="text-muted-foreground">Vídeo</span>
+                          </div>
+                        ) : item.audio_url ? (
+                          <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
+                            <span className="text-muted-foreground">Áudio</span>
+                          </div>
                         ) : (
                           <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
-                            <span className="text-muted-foreground">
-                              {item.media_type === 'video' ? 'Vídeo' : 'Áudio'}
-                            </span>
+                            <span className="text-muted-foreground">Mídia</span>
                           </div>
                         )}
                         <h4 className="font-semibold">{item.title}</h4>

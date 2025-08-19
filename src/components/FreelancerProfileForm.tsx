@@ -44,8 +44,8 @@ export const FreelancerProfileForm: React.FC = () => {
       experience_years: profile?.experience_years || undefined,
       hourly_rate: profile?.hourly_rate ? Number(profile.hourly_rate) : undefined,
       equipment: profile?.equipment || '',
-      city: profile?.city || '',
-      state: profile?.state || '',
+      city: profile?.profiles?.city || profile?.city || '',
+      state: profile?.profiles?.state || profile?.state || '',
     },
   });
 
@@ -56,8 +56,8 @@ export const FreelancerProfileForm: React.FC = () => {
         experience_years: profile.experience_years || undefined,
         hourly_rate: profile.hourly_rate ? Number(profile.hourly_rate) : undefined,
         equipment: profile.equipment || '',
-        city: profile.city || '',
-        state: profile.state || '',
+        city: profile.profiles?.city || profile.city || '',
+        state: profile.profiles?.state || profile.state || '',
       });
       setSelectedSpecialties(specialties);
     }

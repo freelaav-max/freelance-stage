@@ -13,6 +13,8 @@ export type FreelancerProfileWithUser = FreelancerProfile & {
     city: string | null;
     state: string | null;
   };
+  city?: string; // Add city for backwards compatibility
+  state?: string; // Add state for backwards compatibility
 };
 
 export const SPECIALTIES = [
@@ -52,7 +54,9 @@ export const getFreelancerProfile = async (userId: string): Promise<FreelancerPr
     
     return {
       ...profile,
-      profiles: fallbackProfile
+      profiles: fallbackProfile,
+      city: fallbackProfile.city,
+      state: fallbackProfile.state
     } as FreelancerProfileWithUser;
   }
 
@@ -60,7 +64,9 @@ export const getFreelancerProfile = async (userId: string): Promise<FreelancerPr
   if (userProfile && userProfile.length > 0) {
     return {
       ...profile,
-      profiles: userProfile[0]
+      profiles: userProfile[0],
+      city: userProfile[0].city,
+      state: userProfile[0].state
     } as FreelancerProfileWithUser;
   }
 
@@ -156,14 +162,14 @@ export const uploadPortfolioImage = async (userId: string, file: File) => {
   return data.publicUrl;
 };
 
-export const calculateProfileStrength = (profile: FreelancerProfile, specialties: string[], portfolioCount: number) => {
+export const calculateProfileStrength = (profile: FreelancerProfileWithUser, specialties: string[], portfolioCount: number) => {
   let strength = 0;
   
   if (profile.bio) strength += 20;
   if (profile.hourly_rate) strength += 15;
   if (profile.experience_years) strength += 15;
   if (profile.equipment) strength += 10;
-  if (profile.city) strength += 10;
+  if (profile.city || profile.profiles?.city) strength += 10;
   if (specialties.length > 0) strength += 15;
   if (portfolioCount > 0) strength += 15;
 
