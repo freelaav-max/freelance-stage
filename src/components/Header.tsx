@@ -176,6 +176,9 @@ const Header = () => {
               </>
             ) : (
               <>
+                <Button variant="ghost" size="sm" className="text-sm font-medium" onClick={() => navigate('/como-funciona')}>
+                  Como Funciona
+                </Button>
                 <Button variant="ghost" size="sm" className="text-sm font-medium">
                   Para Freelancers
                 </Button>
