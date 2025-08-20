@@ -86,6 +86,13 @@ export type Database = {
             referencedRelation: "freelancer_profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "availabilities_freelancer_id_fkey"
+            columns: ["freelancer_id"]
+            isOneToOne: false
+            referencedRelation: "freelancer_search_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       bookings: {
@@ -233,6 +240,13 @@ export type Database = {
             columns: ["freelancer_id"]
             isOneToOne: false
             referencedRelation: "freelancer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "freelancer_specialties_freelancer_id_fkey"
+            columns: ["freelancer_id"]
+            isOneToOne: false
+            referencedRelation: "freelancer_search_view"
             referencedColumns: ["id"]
           },
         ]
@@ -454,6 +468,13 @@ export type Database = {
             referencedRelation: "freelancer_profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "portfolio_items_freelancer_id_fkey"
+            columns: ["freelancer_id"]
+            isOneToOne: false
+            referencedRelation: "freelancer_search_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       profiles: {
@@ -605,7 +626,32 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      freelancer_search_view: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          experience_years: number | null
+          full_name: string | null
+          hourly_rate: number | null
+          id: string | null
+          is_pro_member: boolean | null
+          profile_strength: number | null
+          rating: number | null
+          state: string | null
+          total_jobs: number | null
+          total_reviews: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "freelancer_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_public_freelancer_info: {
