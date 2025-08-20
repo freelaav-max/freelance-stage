@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Star, Users, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 hero-gradient"></div>
@@ -25,12 +27,12 @@ const HeroSection = () => {
               Para clientes: contrate profissionais qualificados com segurança e agilidade.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="btn-gradient text-lg px-8">
+              <Button size="lg" className="btn-gradient text-lg px-8" onClick={() => navigate('/auth')}>
                 Começar Agora
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8">
+              <Button size="lg" variant="outline" className="text-lg px-8" onClick={() => navigate('/para-freelancers')}>
                 <Play className="mr-2 h-5 w-5" />
-                Ver Como Funciona
+                Para Freelancers
               </Button>
             </div>
             

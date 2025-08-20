@@ -130,7 +130,7 @@ const Header = () => {
           <nav className="flex items-center space-x-4 ml-8 flex-shrink-0">
             {user ? (
               <>
-                <Button variant="ghost" size="sm" className="text-sm font-medium">
+                <Button variant="ghost" size="sm" className="text-sm font-medium" onClick={() => navigate('/para-freelancers')}>
                   Para Freelancers
                 </Button>
                 <Button variant="ghost" size="sm" className="text-sm font-medium">
@@ -179,7 +179,7 @@ const Header = () => {
                 <Button variant="ghost" size="sm" className="text-sm font-medium" onClick={() => navigate('/como-funciona')}>
                   Como Funciona
                 </Button>
-                <Button variant="ghost" size="sm" className="text-sm font-medium">
+                <Button variant="ghost" size="sm" className="text-sm font-medium" onClick={() => navigate('/para-freelancers')}>
                   Para Freelancers
                 </Button>
                 <Button variant="ghost" size="sm" className="text-sm font-medium">

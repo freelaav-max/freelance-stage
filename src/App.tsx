@@ -9,6 +9,7 @@ import FreelancerProfile from "./pages/FreelancerProfile";
 import FreelancerPublicProfile from "./pages/FreelancerPublicProfile";
 import SearchResults from "./pages/SearchResults";
 import HowItWorksPage from "./pages/HowItWorks";
+import ForFreelancersPage from "./pages/ForFreelancers";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/freelancer/:id" element={<FreelancerPublicProfile />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/como-funciona" element={<HowItWorksPage />} />
+            <Route path="/para-freelancers" element={<ForFreelancersPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
