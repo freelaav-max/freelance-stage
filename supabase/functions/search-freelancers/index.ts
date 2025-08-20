@@ -46,15 +46,14 @@ serve(async (req) => {
       limit = 12
     } = filters;
 
-    // Use secure query that only exposes public freelancer information
-    // The RLS policies will automatically filter to only show public data
+    // Build secure query using the RPC function for public data
+    // This ensures we only get safe, public information about freelancers
     let query = supabaseClient
       .from('freelancer_profiles')
       .select(`
         *,
-        profiles!inner(id, full_name, city, state, avatar_url),
         freelancer_specialties!inner(specialty),
-        portfolio_items(id, title, media_url, thumbnail_url, media_type)
+        portfolio_items(id, title, image_url, video_url, audio_url, description)
       `);
 
     // Apply filters
@@ -62,13 +61,8 @@ serve(async (req) => {
       query = query.in('freelancer_specialties.specialty', specialties);
     }
 
-    if (city) {
-      query = query.eq('profiles.city', city);
-    }
-
-    if (state) {
-      query = query.eq('profiles.state', state);
-    }
+    // For location filtering, we'll need to get the public freelancer info
+    // The profiles join won't work anymore due to RLS restrictions
 
     if (minPrice !== undefined) {
       query = query.gte('hourly_rate', minPrice);
@@ -82,9 +76,9 @@ serve(async (req) => {
       query = query.gte('rating', minRating);
     }
 
-    // Text search in bio, full_name (safe since RLS will filter sensitive data)
+    // For text search, we'll search in bio only (profiles data is now secured)
     if (searchTerm) {
-      query = query.or(`bio.ilike.%${searchTerm}%, profiles.full_name.ilike.%${searchTerm}%`);
+      query = query.ilike('bio', `%${searchTerm}%`);
     }
 
     // Apply sorting
@@ -121,30 +115,38 @@ serve(async (req) => {
       );
     }
 
-    // Process results to group specialties and portfolio
-    const processedResults = freelancers?.map(freelancer => {
-      const specialtiesList = Array.isArray(freelancer.freelancer_specialties) 
-        ? freelancer.freelancer_specialties.map((s: any) => s.specialty)
-        : [freelancer.freelancer_specialties?.specialty].filter(Boolean);
+    // Process results and get public profile data securely
+    const processedResults = await Promise.all(
+      freelancers?.map(async (freelancer) => {
+        // Get public profile information using the secure RPC function
+        const { data: publicProfile } = await supabaseClient
+          .rpc('get_public_freelancer_info', { freelancer_id: freelancer.id });
+        
+        const profileInfo = publicProfile?.[0] || {};
+        
+        const specialtiesList = Array.isArray(freelancer.freelancer_specialties) 
+          ? freelancer.freelancer_specialties.map((s: any) => s.specialty)
+          : [freelancer.freelancer_specialties?.specialty].filter(Boolean);
 
-      const portfolioItems = Array.isArray(freelancer.portfolio_items)
-        ? freelancer.portfolio_items.slice(0, 3) // Limit to 3 items for search results
-        : [];
+        const portfolioItems = Array.isArray(freelancer.portfolio_items)
+          ? freelancer.portfolio_items.slice(0, 3) // Limit to 3 items for search results
+          : [];
 
-      return {
-        ...freelancer,
-        specialties: specialtiesList,
-        portfolio: portfolioItems,
-        user: {
-          // Only expose public information - email is now protected by RLS
-          id: freelancer.profiles?.id,
-          full_name: freelancer.profiles?.full_name,
-          city: freelancer.profiles?.city,
-          state: freelancer.profiles?.state,
-          avatar_url: freelancer.profiles?.avatar_url
-        }
-      };
-    }) || [];
+        return {
+          ...freelancer,
+          specialties: specialtiesList,
+          portfolio: portfolioItems,
+          user: {
+            // Only expose public information - secure data access
+            id: profileInfo.id,
+            full_name: profileInfo.full_name,
+            city: profileInfo.city,
+            state: profileInfo.state,
+            avatar_url: profileInfo.avatar_url
+          }
+        };
+      }) || []
+    );
 
     // Calculate total pages
     const totalPages = count ? Math.ceil(count / limit) : 1;
