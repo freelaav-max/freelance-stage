@@ -16,7 +16,7 @@ import {
   Star,
   Shield,
   CheckCircle,
-  Quote,
+  
   Check,
   ArrowRight
 } from "lucide-react";
@@ -32,7 +32,6 @@ const ForFreelancersPage = () => {
         <HeroSection navigate={navigate} />
         <HowItWorksSection />
         <BenefitsSection />
-        <TestimonialsSection />
         <PricingSection navigate={navigate} />
         <FAQSection />
         <FinalCTASection navigate={navigate} />
@@ -290,76 +289,6 @@ const BenefitsSection: React.FC = () => {
   );
 };
 
-const TestimonialsSection: React.FC = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-
-  const testimonials = [
-    {
-      quote: "Desde que me cadastrei na plataforma, consegui aumentar minha renda em 40% e trabalhar com clientes muito mais qualificados.",
-      author: "Carlos Silva",
-      role: "Técnico de Som, São Paulo"
-    },
-    {
-      quote: "O sistema de pagamento com sinal antecipado me dá segurança para aceitar novos trabalhos, e a gestão de agenda facilitou muito minha vida.",
-      author: "Ana Rodrigues",
-      role: "Operadora de Câmera, Rio de Janeiro"
-    },
-    {
-      quote: "As avaliações dos clientes me ajudaram a construir uma reputação sólida e hoje recebo ofertas de trabalho regularmente.",
-      author: "Marcos Oliveira",
-      role: "Iluminador, Belo Horizonte"
-    }
-  ];
-
-  return (
-    <section ref={ref} className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
-            Depoimentos
-          </Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            O que dizem nossos freelancers
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Histórias de sucesso de profissionais como você
-          </p>
-        </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              className="bg-muted/50 p-6 rounded-lg border"
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <div className="mb-4 text-primary">
-                <Quote className="h-8 w-8" />
-              </div>
-              
-              <p className="text-foreground mb-6 italic">"{testimonial.quote}"</p>
-              
-              <div>
-                <h4 className="font-medium">{testimonial.author}</h4>
-                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
 
 const PricingSection: React.FC<{ navigate: (path: string) => void }> = ({ navigate }) => {
   const [ref, inView] = useInView({
