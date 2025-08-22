@@ -180,12 +180,6 @@ const Header = () => {
               </>
             ) : (
               <>
-                <Button variant="ghost" size="sm" className="text-sm font-medium" onClick={() => navigate('/como-funciona')}>
-                  Como Funciona
-                </Button>
-                <Button variant="ghost" size="sm" className="text-sm font-medium" onClick={() => navigate('/para-freelancers')}>
-                  Para Freelancers
-                </Button>
                 <Button variant="ghost" size="sm" className="text-sm font-medium" onClick={() => navigate('/para-clientes')}>
                   Para Clientes
                 </Button>
