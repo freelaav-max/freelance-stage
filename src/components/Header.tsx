@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Search, Menu, User, Bell, LogOut, Settings } from "lucide-react";
+import { Search, Menu, User, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import NotificationCenter from "@/components/notifications/NotificationCenter";
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -53,6 +54,7 @@ const Header = () => {
 
           {/* Mobile Actions */}
           <div className="flex items-center space-x-2 flex-shrink-0">
+            {user && <NotificationCenter />}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -79,9 +81,9 @@ const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     <span>Perfil</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/notificacoes')}>
                     <Settings className="mr-2 h-4 w-4" />
-                    <span>Configurações</span>
+                    <span>Notificações</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
@@ -137,6 +139,8 @@ const Header = () => {
                   Para Clientes
                 </Button>
                 
+                <NotificationCenter />
+                
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full ml-4">
@@ -162,9 +166,9 @@ const Header = () => {
                       <User className="mr-2 h-4 w-4" />
                       <span>Perfil</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/notificacoes')}>
                       <Settings className="mr-2 h-4 w-4" />
-                      <span>Configurações</span>
+                      <span>Notificações</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut}>

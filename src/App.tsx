@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,7 @@ import FreelancerDashboard from "./pages/FreelancerDashboard";
 import Messages from "./pages/Messages";
 import BookingDetails from "./pages/BookingDetails";
 import ClientProfile from "./pages/ClientProfile";
+import NotificationsPage from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -37,6 +39,7 @@ const App = () => (
             <Route path="/dashboard-freelancer" element={<FreelancerDashboard />} />
             <Route path="/mensagens" element={<Messages />} />
             <Route path="/booking/:id" element={<BookingDetails />} />
+            <Route path="/notificacoes" element={<NotificationsPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
