@@ -10,6 +10,7 @@ import FreelancerPublicProfile from "./pages/FreelancerPublicProfile";
 import SearchResults from "./pages/SearchResults";
 import HowItWorksPage from "./pages/HowItWorks";
 import ForFreelancersPage from "./pages/ForFreelancers";
+import ForClientsPage from "./pages/ForClients";
 import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import Messages from "./pages/Messages";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/search" element={<SearchResults />} />
             <Route path="/como-funciona" element={<HowItWorksPage />} />
             <Route path="/para-freelancers" element={<ForFreelancersPage />} />
+            <Route path="/para-clientes" element={<ForClientsPage />} />
             <Route path="/dashboard-cliente" element={<ClientDashboard />} />
             <Route path="/dashboard-freelancer" element={<FreelancerDashboard />} />
             <Route path="/mensagens" element={<Messages />} />
