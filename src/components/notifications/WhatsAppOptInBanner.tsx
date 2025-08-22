@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
+import { getWhatsAppOptInStatus, updateWhatsAppOptIn } from '@/lib/user';
 
 const WhatsAppOptInBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,12 +13,9 @@ const WhatsAppOptInBanner: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Check if user has already opted in for WhatsApp notifications
     const checkOptInStatus = async () => {
       try {
-        // Mock API call - replace with actual API
-        const hasOptedIn = localStorage.getItem('whatsapp_opted_in') === 'true';
-        const userPhone = localStorage.getItem('user_phone') || '';
+        const { hasOptedIn, userPhone } = await getWhatsAppOptInStatus();
         
         if (!hasOptedIn) {
           setIsVisible(true);
@@ -62,11 +60,7 @@ const WhatsAppOptInBanner: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      localStorage.setItem('whatsapp_opted_in', 'true');
-      localStorage.setItem('user_phone', phone);
+      await updateWhatsAppOptIn(true, phone);
       
       setIsVisible(false);
       toast({
@@ -89,10 +83,7 @@ const WhatsAppOptInBanner: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      localStorage.setItem('whatsapp_opted_in', 'false');
+      await updateWhatsAppOptIn(false);
       setIsVisible(false);
       
       toast({

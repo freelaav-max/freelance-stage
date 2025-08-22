@@ -469,6 +469,7 @@ export type Database = {
           state: string | null
           updated_at: string | null
           user_type: Database["public"]["Enums"]["user_type"]
+          whatsapp_notification_opt_in: boolean
         }
         Insert: {
           avatar_url?: string | null
@@ -482,6 +483,7 @@ export type Database = {
           state?: string | null
           updated_at?: string | null
           user_type: Database["public"]["Enums"]["user_type"]
+          whatsapp_notification_opt_in?: boolean
         }
         Update: {
           avatar_url?: string | null
@@ -495,6 +497,7 @@ export type Database = {
           state?: string | null
           updated_at?: string | null
           user_type?: Database["public"]["Enums"]["user_type"]
+          whatsapp_notification_opt_in?: boolean
         }
         Relationships: []
       }
