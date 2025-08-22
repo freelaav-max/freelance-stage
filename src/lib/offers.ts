@@ -56,14 +56,34 @@ export const getOffers = async (userId: string) => {
   return data;
 };
 
-export const updateOfferStatus = async (offerId: string, status: Database['public']['Enums']['offer_status']) => {
-  const { data, error } = await supabase
-    .from('offers')
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq('id', offerId)
-    .select()
-    .single();
+export interface UpdateOfferStatusData {
+  status: 'accepted' | 'rejected' | 'counter_offer';
+  rejection_reason?: string;
+  counter_price?: number;
+}
 
-  if (error) throw error;
+export const updateOfferStatus = async (
+  offerId: string, 
+  statusData: UpdateOfferStatusData
+) => {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  // Use a edge function to update offer status and trigger webhook
+  const { data, error } = await supabase.functions.invoke('update-offer-status', {
+    body: {
+      offer_id: offerId,
+      user_id: user.id,
+      ...statusData
+    }
+  });
+
+  if (error) {
+    throw error;
+  }
+
   return data;
 };
